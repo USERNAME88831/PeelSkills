@@ -15,13 +15,15 @@ from pybricks.media.ev3dev import SoundFile, ImageFile
 
 
 class ROBOT(): #TODO: finish making basic functions, and add a line tracking system here.
-    def __init__(self, M1Port, M2Port, M3Port, ColorSensorPort, FrontSensorPort, LeftSensorPort, RightSensorPort):
+    def __init__(self, M1Port, M2Port, M3Port, ColorSensorPort, FrontSensorPort, LeftSensorPort, RightSensorPort, debugMode = False):
         """
         """
         self.wheelDiameter = 1 # the diameter of the wheels
         self.axleTrack = 1 # the horizontal distance between the two wheels, practically the width of the robot  
         # TODO: get diameter of the two wheels, and horizontal distance between the two wheels
 
+        
+        self.debugMode = debugMode # enables certain features to test the robot.
         self.safeDistance = 300 # avoid the obstacle when it reaches this distance(uses mm)
         self.brick = EV3Brick()
         self.LeftWheel = Motor(M1Port)
