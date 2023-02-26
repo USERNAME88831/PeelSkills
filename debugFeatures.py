@@ -4,7 +4,7 @@ from threading import *
 
 
 class Logger:
-    def __init__(self, motor, sensorFunction, leftMotor, rightMotor, thirdMotor): # TODO: Change name when we find the use of the third motor
+    def __init__(self, motor, sensorFunction, leftMotor, rightMotor, thirdMotor, obstacleDetectFunc): # TODO: Change name when we find the use of the third motor
         """
         The logger logs everything that the robot is doing in a file \n
         
@@ -14,6 +14,7 @@ class Logger:
         self.leftMotor = leftMotor
         self.rightMotor = rightMotor
         self.thirdMotor = thirdMotor
+        self.obstacleDetectFunc = obstacleDetectFunc
 
         self.data = DataLog("leftSensorDistance", 
                             "rightSensorDistance",
@@ -22,7 +23,8 @@ class Logger:
                             "leftWheelAngle", # Individual wheel
                             "rightWheelAngle", # Individual wheel
                             "thirdMotorAngle", # TODO: Change name when we find the use of the third motor
-                            "robotSpeed"
+                            "robotSpeed",
+                            "obstacleDetected"
                             )
         
         self.thread = Thread(target=self._logFunc)
@@ -39,7 +41,8 @@ class Logger:
             leftWheelAngle = self.leftMotor.angle()
             rightWheelAngle = self.rightMotor.angle()
             thirdMotorAngle = self.thirdMotor.angle()
-            _, robotSpeed, _, _ = self.motor
+            _, robotSpeed, _, _ = self.motor.state()
+            obstacleDetected = self.obstacleDetectFunc()
             self.data.log(leftSide,
                         rightSide,
                         frontSide,
@@ -47,7 +50,9 @@ class Logger:
                         leftWheelAngle,
                         rightWheelAngle,
                         thirdMotorAngle,
-                        robotSpeed)
+                        robotSpeed,
+                        obstacleDetected
+                        )
         
     def startLogging(self):
         self.thread.start()
