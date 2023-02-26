@@ -15,7 +15,8 @@ from pybricks.media.ev3dev import SoundFile, ImageFile
 
 
 class ROBOT(): #TODO: finish making basic functions, and add a line tracking system here.
-    def __init__(self, M1Port, M2Port, M3Port, ColorSensorPort, FrontSensorPort, LeftSensorPort, RightSensorPort, debugMode = False, overrideSafetyFeatures = False):
+    def __init__(self, M1Port, M2Port, M3Port, ColorSensorPort, FrontSensorPort, 
+                 LeftSensorPort, RightSensorPort, debugMode = False, overrideSafetyFeatures = False):
         """
         """
         self.wheelDiameter = 1 # the diameter of the wheels
@@ -61,7 +62,8 @@ class ROBOT(): #TODO: finish making basic functions, and add a line tracking sys
     def followLine(self, speed, threshold) -> int:
         
         """ 
-        This function should be put in a loop in order to fully work, and when finished make sure to end with self.motor.stop().\n
+        This function should be put in a loop in order to fully work, 
+        and when finished make sure to end with self.motor.stop().\n
         
         threshold should be calculated like:
         a = light reflected by the black line
@@ -90,7 +92,8 @@ class ROBOT(): #TODO: finish making basic functions, and add a line tracking sys
 
     def sensorOutput(self):
         """
-        returns: distance between the left side and and an object, distance between the right side and and an object,
+        returns: distance between the left side and and an object, 
+        distance between the right side and and an object,
         distance between the front side and and an object, and the light reflected in the color sensor.
         
         """
