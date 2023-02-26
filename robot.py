@@ -11,13 +11,15 @@ from pybricks.tools import wait, StopWatch, DataLog
 from pybricks.robotics import DriveBase
 from pybricks.media.ev3dev import SoundFile, ImageFile
 from debugFeatures import Logger
+from threading import *
 
 
 
 class ROBOT(): #TODO: finish making basic functions, and add a line tracking system here.
-    def __init__(self, M1Port, M2Port, M3Port, ColorSensorPort, FrontSensorPort, 
-                 LeftSensorPort, RightSensorPort, debugMode = False, overrideSafetyFeatures = False):
+    def __init__(self, leftMotorPort, rightMotorPort, M3Port, ColorSensorPort, FrontSensorPort, 
+                 LeftSensorPort, RightSensorPort, debugMode = False, overrideSafetyFeatures=False):
         """
+
         """
         self.wheelDiameter = 1 # the diameter of the wheels
         self.axleTrack = 1 # the horizontal distance between the two wheels, practically the width of the robot  
@@ -30,20 +32,29 @@ class ROBOT(): #TODO: finish making basic functions, and add a line tracking sys
 
         self.debugMode = debugMode # enables certain features to test the robot.
 
-        self.logger = Logger(self.motor, self.sensorOutput, self.LeftWheel, self.RightWheel, self.m3)
+        self.logger = Logger(self.motor,
+                             self.sensorOutput,
+                             self.LeftWheel,
+                             self.RightWheel,
+                             self.m3,
+                             self.isObstacleDetected
+                             )
 
         self.brick = EV3Brick()
         self.slowDownDistance = 500 # slows down when it is near this distance
         self.stopDistance = 200 # comes to a complete stop when it reaches this distance
 
-        self.LeftWheel = Motor(M1Port)
-        self.RightWheel = Motor(M2Port)
+        self.LeftWheel = Motor(leftMotorPort)
+        self.RightWheel = Motor(rightMotorPort)
         self.motor = DriveBase(self.LeftWheel, self.RightWheel, self.wheelDiameter, self.axleTrack) # The class used to drive robots
         self.m3 = Motor(M3Port) # TODO: find use of the third motor
         self.colorSensor = ColorSensor(ColorSensorPort) # Should be used to track the lines
         self.frontSensor = UltrasonicSensor(FrontSensorPort)
         self.leftSensor = UltrasonicSensor(LeftSensorPort)
         self.rightSensor = UltrasonicSensor(RightSensorPort)
+        self._statThread = Thread(target=self._statFunc)
+        self._statThread.setDaemon(True)
+        
         
     def forward(self, distance):
         self.motor.straight(distance)
@@ -65,12 +76,12 @@ class ROBOT(): #TODO: finish making basic functions, and add a line tracking sys
         This function should be put in a loop in order to fully work, 
         and when finished make sure to end with self.motor.stop().\n
         
-        threshold should be calculated like:
-        a = light reflected by the black line
-        b = light reflected elsewhere
-        c = another value of light reflected elsewhere
-        d = tuple(a, b, c)
-        (a+b+c) / length(d)\n
+        threshold should be calculated like:\n
+        a = light reflected by the black line\n
+        b = light reflected elsewhere\n
+        c = another value of light reflected elsewhere\n
+        d = tuple(a, b, c\n
+        sum(d/ length(d)\n
         
         speed is milimeters per second\n
         should return 0 if it performed fine, or -1 if something happened
@@ -104,3 +115,29 @@ class ROBOT(): #TODO: finish making basic functions, and add a line tracking sys
         frontSide = self.frontSensor.distance()
         lightReflected = self.colorSensor.reflection()
         return leftSide, rightSide, frontSide, lightReflected
+    
+    def moveAroundObstacle(self):
+        pass
+    
+
+    def _statFunc(self):
+    
+        while True:
+            self.brick.screen.clear()
+            _, robotSpeed, _, _ = self.motor.state()
+            robotSpeed = "IDLE" if robotSpeed == 0 else str(robotSpeed)
+            text = f"""
+                    INGLEBOROUGH ROBOT\n
+                       |{robotSpeed}|
+                    """
+            # TODO: add more info on the display
+            self.brick.screen.print(text)
+            
+
+
+    def displayStats(self): ## displays information on the screen of the brick in the background
+        self._statThread.start()
+        
+
+    def isObstacleDetected(self): # Provides information to other programs in other files
+        return self.obstacleDetected

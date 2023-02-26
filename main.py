@@ -2,7 +2,6 @@
 # This file is the program that will be run by the brick
 from robot import ROBOT
 from ports import *
-
 """
 motor ports are A, B, C, and D
 sensor ports are S1, S2, S3, and S4
@@ -20,4 +19,16 @@ rightSensorPort = S2
 frontSensorPort = S3
 colorSensorPort = S4
 
-bill = ROBOT()
+bill = ROBOT(leftWheelPort, rightWheelPort, thirdMotorPort,
+             colorSensorPort, frontSensorPort, leftSensorPort, rightSensorPort,
+             debugMode=True, overrideSafetyFeatures=False)
+
+# Waiting until a button is pressed
+while True:
+    buttonsPressed = bill.brick.buttons.pressed()
+    if CENTERBUTTON in buttonsPressed:
+        break
+
+# Main program starts here
+
+bill.displayStats()

@@ -1,4 +1,4 @@
-from pybricks.parameters import Port
+from pybricks.parameters import Port, Button
 
 
 # Motor ports: 
@@ -12,3 +12,6 @@ S1 = Port.S1
 S2 = Port.S2
 S3 = Port.S3
 S4 = Port.S4
+
+# Buttons 
+CENTERBUTTON = Button.CENTER
