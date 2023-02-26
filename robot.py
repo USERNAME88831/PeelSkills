@@ -10,7 +10,7 @@ from pybricks.parameters import Port, Stop, Direction, Button, Color
 from pybricks.tools import wait, StopWatch, DataLog
 from pybricks.robotics import DriveBase
 from pybricks.media.ev3dev import SoundFile, ImageFile
-
+from debugFeatures import Logger
 
 
 
@@ -30,7 +30,7 @@ class ROBOT(): #TODO: finish making basic functions, and add a line tracking sys
 
         self.debugMode = debugMode # enables certain features to test the robot.
 
-
+        self.logger = Logger(self.motor, self.sensorOutput, self.LeftWheel, self.RightWheel, self.m3)
 
         self.brick = EV3Brick()
         self.slowDownDistance = 500 # slows down when it is near this distance
@@ -39,7 +39,7 @@ class ROBOT(): #TODO: finish making basic functions, and add a line tracking sys
         self.LeftWheel = Motor(M1Port)
         self.RightWheel = Motor(M2Port)
         self.motor = DriveBase(self.LeftWheel, self.RightWheel, self.wheelDiameter, self.axleTrack) # The class used to drive robots
-        self.M3 = Motor(M3Port) # TODO: find use of the third motor
+        self.m3 = Motor(M3Port) # TODO: find use of the third motor
         self.colorSensor = ColorSensor(ColorSensorPort) # Should be used to track the lines
         self.frontSensor = UltrasonicSensor(FrontSensorPort)
         self.leftSensor = UltrasonicSensor(LeftSensorPort)
