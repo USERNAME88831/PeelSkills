@@ -15,12 +15,18 @@ from threading import *
 
 
 
-class ROBOT(): #TODO: finish making basic functions, and add a line tracking system here.
-    def __init__(self, leftMotorPort, rightMotorPort, M3Port, ColorSensorPort, FrontSensorPort, 
-                 LeftSensorPort, RightSensorPort, debugMode = False, overrideSafetyFeatures=False):
-        """
+class ROBOT():    
 
+    def __init__(self, leftMotorPort, rightMotorPort, ColorSensorPort, FrontSensorPort, 
+                LeftSensorPort, RightSensorPort, debugMode = False, overrideSafetyFeatures=False):
         """
+    def __init__(self, leftMotorPort, rightMotorPort, M3Port, ColorSensorPort, FrontSensorPort, 
+            LeftSensorPort, RightSensorPort, debugMode = False, overrideSafetyFeatures=False):
+
+            
+        """
+        
+
         self.wheelDiameter = 1 # the diameter of the wheels
         self.axleTrack = 1 # the horizontal distance between the two wheels, practically the width of the robot  
         # TODO: get diameter of the two wheels, and horizontal distance between the two wheels
@@ -36,7 +42,8 @@ class ROBOT(): #TODO: finish making basic functions, and add a line tracking sys
                              self.sensorOutput,
                              self.LeftWheel,
                              self.RightWheel,
-                             self.m3,
+                             None,
+        #                     self.m3,
                              self.isObstacleDetected
                              )
 
@@ -47,7 +54,7 @@ class ROBOT(): #TODO: finish making basic functions, and add a line tracking sys
         self.LeftWheel = Motor(leftMotorPort)
         self.RightWheel = Motor(rightMotorPort)
         self.motor = DriveBase(self.LeftWheel, self.RightWheel, self.wheelDiameter, self.axleTrack) # The class used to drive robots
-        self.m3 = Motor(M3Port) # TODO: find use of the third motor
+        # self.m3 = Motor(M3Port) # TODO: find use of the third motor
         self.colorSensor = ColorSensor(ColorSensorPort) # Should be used to track the lines
         self.frontSensor = UltrasonicSensor(FrontSensorPort)
         self.leftSensor = UltrasonicSensor(LeftSensorPort)

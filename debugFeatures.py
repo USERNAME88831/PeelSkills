@@ -13,8 +13,9 @@ class Logger:
         self.sensorFunction = sensorFunction
         self.leftMotor = leftMotor
         self.rightMotor = rightMotor
-        self.thirdMotor = thirdMotor
+#        self.thirdMotor = thirdMotor
         self.obstacleDetectFunc = obstacleDetectFunc
+        
 
         self.data = DataLog("leftSensorDistance", 
                             "rightSensorDistance",
@@ -22,11 +23,10 @@ class Logger:
                             "colorSensorReflection"
                             "leftWheelAngle", # Individual wheel
                             "rightWheelAngle", # Individual wheel
-                            "thirdMotorAngle", # TODO: Change name when we find the use of the third motor
+#                            "thirdMotorAngle", # TODO: Change name when we find the use of the third motor
                             "robotSpeed",
                             "obstacleDetected"
                             )
-        
         self.thread = Thread(target=self._logFunc)
         self.thread.setDaemon(True) # Since it runs in the background, it will immediatly end when the non-dameon threads end.
 
@@ -40,7 +40,7 @@ class Logger:
             leftSide, rightSide, frontSide, lightReflected = self.sensorFunction()
             leftWheelAngle = self.leftMotor.angle()
             rightWheelAngle = self.rightMotor.angle()
-            thirdMotorAngle = self.thirdMotor.angle()
+            # thirdMotorAngle = self.thirdMotor.angle()
             _, robotSpeed, _, _ = self.motor.state()
             obstacleDetected = self.obstacleDetectFunc()
             self.data.log(leftSide,
@@ -49,7 +49,7 @@ class Logger:
                         lightReflected,
                         leftWheelAngle,
                         rightWheelAngle,
-                        thirdMotorAngle,
+            #            thirdMotorAngle,
                         robotSpeed,
                         obstacleDetected
                         )
