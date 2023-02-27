@@ -1,6 +1,8 @@
 #!/usr/bin/env pybricks-micropython
+# NOTE: THIS BRANCH WILL BE USED TO TEST MOVEMENT ONLY, the TWO TIRES WILL ONLY BE USED
 # This file is the program that will be run by the brick
-# TODO: Comment out all references to third motor, as we have no current use for it.
+
+
 from robot import ROBOT
 from ports import *
 """
@@ -40,3 +42,8 @@ while True:
 # Main program starts here
 
 bill.displayStats()
+
+bill.right(360)
+bill.left(360)
+bill.forward(100)
+bill.backward(100)

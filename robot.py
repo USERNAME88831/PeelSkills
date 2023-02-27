@@ -18,7 +18,7 @@ from threading import *
 class ROBOT():    
 
     def __init__(self, leftMotorPort, rightMotorPort, ColorSensorPort, FrontSensorPort, 
-                LeftSensorPort, RightSensorPort, debugMode = False, overrideSafetyFeatures=False):
+                LeftSensorPort, RightSensorPort, debugMode = False, overrideSafetyFeatures=False, movementTestMode=True):
         """
     def __init__(self, leftMotorPort, rightMotorPort, M3Port, ColorSensorPort, FrontSensorPort, 
             LeftSensorPort, RightSensorPort, debugMode = False, overrideSafetyFeatures=False):
@@ -38,14 +38,16 @@ class ROBOT():
 
         self.debugMode = debugMode # enables certain features to test the robot.
 
-        self.logger = Logger(self.motor,
-                             self.sensorOutput,
-                             self.LeftWheel,
-                             self.RightWheel,
-                             None,
-        #                     self.m3,
-                             self.isObstacleDetected
-                             )
+        self.logger = None
+        if movementTestMode == False:
+            self.logger = Logger(self.motor,
+                                    self.sensorOutput,
+                                    self.LeftWheel,
+                                    self.RightWheel,
+                                    None,
+            #                     self.m3,
+                                    self.isObstacleDetected
+                                    )
 
         self.brick = EV3Brick()
         self.slowDownDistance = 500 # slows down when it is near this distance
@@ -54,13 +56,22 @@ class ROBOT():
         self.LeftWheel = Motor(leftMotorPort)
         self.RightWheel = Motor(rightMotorPort)
         self.motor = DriveBase(self.LeftWheel, self.RightWheel, self.wheelDiameter, self.axleTrack) # The class used to drive robots
-        # self.m3 = Motor(M3Port) # TODO: find use of the third motor
-        self.colorSensor = ColorSensor(ColorSensorPort) # Should be used to track the lines
-        self.frontSensor = UltrasonicSensor(FrontSensorPort)
-        self.leftSensor = UltrasonicSensor(LeftSensorPort)
-        self.rightSensor = UltrasonicSensor(RightSensorPort)
-        self._statThread = Thread(target=self._statFunc)
-        self._statThread.setDaemon(True)
+
+
+        self.colorSensor = None
+        self.frontSensor = None
+        self.leftSensor = None
+        self.rightSensor = None
+        self._statThread = None
+
+        if movementTestMode == True:
+            # self.m3 = Motor(M3Port) # TODO: find use of the third motor
+            self.colorSensor = ColorSensor(ColorSensorPort) # Should be used to track the lines
+            self.frontSensor = UltrasonicSensor(FrontSensorPort)
+            self.leftSensor = UltrasonicSensor(LeftSensorPort)
+            self.rightSensor = UltrasonicSensor(RightSensorPort)
+            self._statThread = Thread(target=self._statFunc)
+            self._statThread.setDaemon(True)
         
         
     def forward(self, distance):
