@@ -10,9 +10,9 @@ sensor ports are S1, S2, S3, and S4
 
 
 # TODO: replace these values with the actual ports in the brick
-leftWheelPort = A
-rightWheelPort = B
-thirdMotorPort = C # should be given a name after we find out the use of it
+leftWheelPort = B
+rightWheelPort = C
+thirdMotorPort = D # should be given a name after we find out the use of it
 
 leftSensorPort = S1
 rightSensorPort = S2
