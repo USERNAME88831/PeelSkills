@@ -27,8 +27,8 @@ class ROBOT():
         """
         
 
-        self.wheelDiameter = 1 # the diameter of the wheels
-        self.axleTrack = 1 # the horizontal distance between the two wheels, practically the width of the robot  
+        self.wheelDiameter = 60 # the diameter of the wheels
+        self.axleTrack = 200 # the horizontal distance between the two wheels, practically the width of the robot  
         # TODO: get diameter of the two wheels, and horizontal distance between the two wheels
 
         self.safeMode = not overrideSafetyFeatures # safety features should only be turned off while testing and debugging
