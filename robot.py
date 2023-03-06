@@ -56,12 +56,16 @@ class ROBOT():
         self.LeftWheel = Motor(leftMotorPort)
         self.RightWheel = Motor(rightMotorPort)
         self.motor = DriveBase(self.LeftWheel, self.RightWheel, self.wheelDiameter, self.axleTrack) # The class used to drive robots
-
+        mSpeed, maxAcceleration, _ = self.motor.limits()
+        self.maxSpeed = mSpeed
+        self.motor.settings(mSpeed, maxAcceleration)
 
         self.colorSensor = None
         self.frontSensor = None
         self.leftSensor = None
         self.rightSensor = None
+
+
         self._statThread = None
 
         if movementTestMode == False:
