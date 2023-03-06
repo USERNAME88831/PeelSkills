@@ -28,7 +28,7 @@ class ROBOT():
         
 
         self.wheelDiameter = 60 # the diameter of the wheels
-        self.axleTrack = 200 # the horizontal distance between the two wheels, practically the width of the robot  
+        self.axleTrack = 167.5 # the horizontal distance between the two wheels, practically the width of the robot  
         # TODO: get diameter of the two wheels, and horizontal distance between the two wheels
 
         self.safeMode = not overrideSafetyFeatures # safety features should only be turned off while testing and debugging
@@ -64,7 +64,7 @@ class ROBOT():
         self.rightSensor = None
         self._statThread = None
 
-        if movementTestMode == True:
+        if movementTestMode == False:
             # self.m3 = Motor(M3Port) # TODO: find use of the third motor
             self.colorSensor = ColorSensor(ColorSensorPort) # Should be used to track the lines
             self.frontSensor = UltrasonicSensor(FrontSensorPort)
@@ -75,6 +75,7 @@ class ROBOT():
         
         
     def forward(self, distance):
+        
         self.motor.straight(distance)
 
     def right(self, degrees):
@@ -144,12 +145,13 @@ class ROBOT():
             self.brick.screen.clear()
             _, robotSpeed, _, _ = self.motor.state()
             robotSpeed = "IDLE" if robotSpeed == 0 else str(robotSpeed)
-            text = f"""
-                    INGLEBOROUGH ROBOT\n
-                       |{robotSpeed}|
-                    """
+
+
+            #text = f"INGLEBOROUGH ROBOT\n|{robotSpeed}|"
+
+            
             # TODO: add more info on the display
-            self.brick.screen.print(text)
+            self.brick.screen.print("f")
             
 
 

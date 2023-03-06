@@ -13,8 +13,8 @@ sensor ports are S1, S2, S3, and S4
 
 
 # TODO: replace these values with the actual ports in the brick
-leftWheelPort = B
-rightWheelPort = C
+leftWheelPort = A
+rightWheelPort = D
 # thirdMotorPort = D # should be given a name after we find out the use of it
 
 leftSensorPort = S1
@@ -41,9 +41,12 @@ while True:
 
 # Main program starts here
 
-bill.displayStats()
+# bill.displayStats()
 
-bill.right(360)
-bill.left(360)
-bill.forward(100)
-bill.backward(100)
+try:
+    bill.forward(1000)
+    bill.backward(1000)
+    bill.right(360)
+    bill.left(360)
+except Exception as e:
+    print(str(e))
