@@ -11,14 +11,14 @@ from pybricks.tools import wait, StopWatch, DataLog
 from pybricks.robotics import DriveBase
 from pybricks.media.ev3dev import SoundFile, ImageFile
 from debugFeatures import Logger
-from threading import *
+from threading import * 
 
 
 
 class ROBOT():    
 
-    def __init__(self, leftMotorPort, rightMotorPort, ColorSensorPort, FrontSensorPort, 
-                LeftSensorPort, RightSensorPort, debugMode = False, overrideSafetyFeatures=False):
+    def __init__(self, leftMotorPort, rightMotorPort, M3Port, ColorSensorPort, FrontSensorPort, 
+                LeftSensorPort, RightSensorPort, debugMode = False, overrideSafetyFeatures=False, thirdMotorOn=True):
         """
     def __init__(self, leftMotorPort, rightMotorPort, M3Port, ColorSensorPort, FrontSensorPort, 
             LeftSensorPort, RightSensorPort, debugMode = False, overrideSafetyFeatures=False):
@@ -37,24 +37,27 @@ class ROBOT():
         # NOTE: when the obstacle isn't a problem anymore, the program has to manually set it to false
 
         self.debugMode = debugMode # enables certain features to test the robot.
-
+        self.hasThirdMotor = thirdMotorOn
         self.logger = Logger(self.motor,
                              self.sensorOutput,
                              self.LeftWheel,
                              self.RightWheel,
-                             None,
-        #                     self.m3,
-                             self.isObstacleDetected
+                             self.m3,
+                             self.isObstacleDetected,
+                             thirdMotorOn
                              )
 
         self.brick = EV3Brick()
         self.slowDownDistance = 500 # slows down when it is near this distance
         self.stopDistance = 200 # comes to a complete stop when it reaches this distance
-
+    
         self.LeftWheel = Motor(leftMotorPort)
         self.RightWheel = Motor(rightMotorPort)
+        
         self.motor = DriveBase(self.LeftWheel, self.RightWheel, self.wheelDiameter, self.axleTrack) # The class used to drive robots
-        # self.m3 = Motor(M3Port) # TODO: find use of the third motor
+        self.m3 = None
+        if thirdMotorOn:
+            self.m3 = Motor(M3Port) # TODO: find use of the third motor
         self.colorSensor = ColorSensor(ColorSensorPort) # Should be used to track the lines
         self.frontSensor = UltrasonicSensor(FrontSensorPort)
         self.leftSensor = UltrasonicSensor(LeftSensorPort)
@@ -74,6 +77,27 @@ class ROBOT():
 
     def backward(self, distance):
         self.motor.straight(-distance)
+
+
+    def liftUp(self, angle) -> int:
+        maxAngle = 90
+
+        minAngle = 0
+
+
+        if self.hasThirdMotor:
+            if angle/-angle == 1:
+                if (self.m3.angle+angle) < minAngle:
+                    self.m3.run_angle(10, angle)
+                else:
+                    return -1
+            else:
+                if (self.m3.angle+angle) > maxAngle:
+                    self.m3.run_angle(10, angle)
+                else:
+                    return -1
+        else:
+            return -1
 
     
 

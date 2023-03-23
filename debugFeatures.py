@@ -4,7 +4,7 @@ from threading import *
 
 
 class Logger:
-    def __init__(self, motor, sensorFunction, leftMotor, rightMotor, thirdMotor, obstacleDetectFunc): # TODO: Change name when we find the use of the third motor
+    def __init__(self, motor, sensorFunction, leftMotor, rightMotor, thirdMotor, obstacleDetectFunc, thirdMotorOn=True): # TODO: Change name when we find the use of the third motor
         """
         The logger logs everything that the robot is doing in a file \n
         
@@ -13,20 +13,35 @@ class Logger:
         self.sensorFunction = sensorFunction
         self.leftMotor = leftMotor
         self.rightMotor = rightMotor
-#        self.thirdMotor = thirdMotor
+        self.thirdMotor = None
+        if thirdMotorOn:
+            self.thirdMotor = thirdMotor
         self.obstacleDetectFunc = obstacleDetectFunc
         
+        self.data = None
 
-        self.data = DataLog("leftSensorDistance", 
-                            "rightSensorDistance",
-                            "frontSensorDistance",
-                            "colorSensorReflection"
-                            "leftWheelAngle", # Individual wheel
-                            "rightWheelAngle", # Individual wheel
-#                            "thirdMotorAngle", # TODO: Change name when we find the use of the third motor
-                            "robotSpeed",
-                            "obstacleDetected"
-                            )
+        if thirdMotorOn:
+            self.data = DataLog("leftSensorDistance", 
+                                "rightSensorDistance",
+                                "frontSensorDistance",
+                                "colorSensorReflection"
+                                "leftWheelAngle", # Individual wheel
+                                "rightWheelAngle", # Individual wheel
+                                "thirdMotorAngle",
+                                "robotSpeed",
+                                "obstacleDetected"
+                                )
+        else:
+            self.data = DataLog("leftSensorDistance", 
+                                "rightSensorDistance",
+                                "frontSensorDistance",
+                                "colorSensorReflection"
+                                "leftWheelAngle", # Individual wheel
+                                "rightWheelAngle", # Individual wheel
+                                "robotSpeed",
+                                "obstacleDetected"
+                                )
+
         self.thread = Thread(target=self._logFunc)
         self.thread.setDaemon(True) # Since it runs in the background, it will immediatly end when the non-dameon threads end.
 
@@ -40,19 +55,33 @@ class Logger:
             leftSide, rightSide, frontSide, lightReflected = self.sensorFunction()
             leftWheelAngle = self.leftMotor.angle()
             rightWheelAngle = self.rightMotor.angle()
-            # thirdMotorAngle = self.thirdMotor.angle()
+            if self.thirdMotor != None:
+                thirdMotorAngle = self.thirdMotor.angle()
+            
             _, robotSpeed, _, _ = self.motor.state()
             obstacleDetected = self.obstacleDetectFunc()
-            self.data.log(leftSide,
-                        rightSide,
-                        frontSide,
-                        lightReflected,
-                        leftWheelAngle,
-                        rightWheelAngle,
-            #            thirdMotorAngle,
-                        robotSpeed,
-                        obstacleDetected
-                        )
+            
+            if self.thirdMotor != None:
+                self.data.log(leftSide,
+                            rightSide,
+                            frontSide,
+                            lightReflected,
+                            leftWheelAngle,
+                            rightWheelAngle,
+                            thirdMotorAngle,
+                            robotSpeed,
+                            obstacleDetected
+                            )
+            else:
+                self.data.log(leftSide,
+                            rightSide,
+                            frontSide,
+                            lightReflected,
+                            leftWheelAngle,
+                            rightWheelAngle,
+                            robotSpeed,
+                            obstacleDetected
+                            )
         
     def startLogging(self):
         self.thread.start()
