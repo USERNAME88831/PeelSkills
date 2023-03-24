@@ -17,15 +17,15 @@ from threading import *
 
 class ROBOT():    
 
-    def __init__(self, leftMotorPort, rightMotorPort, M3Port, ColorSensorPort, FrontSensorPort, 
-                LeftSensorPort, RightSensorPort, debugMode = False, overrideSafetyFeatures=False, thirdMotorOn=True):
+    def __init__(self, leftMotorPort, rightMotorPort, M3Port, ColorSensorPort, FrontSensorPort, LeftSensorPort, RightSensorPort, debugMode = False, overrideSafetyFeatures=False, thirdMotorOn=True):
         """
     def __init__(self, leftMotorPort, rightMotorPort, M3Port, ColorSensorPort, FrontSensorPort, 
             LeftSensorPort, RightSensorPort, debugMode = False, overrideSafetyFeatures=False):
 
             
         """
-        
+       
+
 
         self.wheelDiameter = 60 # the diameter of the wheels
         self.axleTrack = 200 # the horizontal distance between the two wheels, practically the width of the robot  
@@ -35,7 +35,25 @@ class ROBOT():
 
         self.obstacleDetected = False # when the robot comes to a complete stop because of saftey features, this boolean is set to true
         # NOTE: when the obstacle isn't a problem anymore, the program has to manually set it to false
+        self.brick = EV3Brick()
+        self.slowDownDistance = 500 # slows down when it is near this distance
+        self.stopDistance = 200 # comes to a complete stop when it reaches this distance
+    
+        self.LeftWheel = Motor(leftMotorPort)
+        self.RightWheel = Motor(rightMotorPort)
 
+        self.motor = DriveBase(self.LeftWheel, self.RightWheel, self.wheelDiameter, self.axleTrack) # The class used to drive robots
+        
+        self.m3 = None
+        if thirdMotorOn:
+            self.m3 = Motor(M3Port) # TODO: find use of the third motor
+        self.colorSensor = ColorSensor(ColorSensorPort) # Should be used to track the lines
+        self.frontSensor = UltrasonicSensor(FrontSensorPort)
+        try:
+            self.leftSensor = UltrasonicSensor(LeftSensorPort)
+        except Exception as e:
+            print(str(e))
+        self.rightSensor = UltrasonicSensor(RightSensorPort)
         self.debugMode = debugMode # enables certain features to test the robot.
         self.hasThirdMotor = thirdMotorOn
         self.logger = Logger(self.motor,
@@ -47,23 +65,9 @@ class ROBOT():
                              thirdMotorOn
                              )
 
-        self.brick = EV3Brick()
-        self.slowDownDistance = 500 # slows down when it is near this distance
-        self.stopDistance = 200 # comes to a complete stop when it reaches this distance
-    
-        self.LeftWheel = Motor(leftMotorPort)
-        self.RightWheel = Motor(rightMotorPort)
-        
-        self.motor = DriveBase(self.LeftWheel, self.RightWheel, self.wheelDiameter, self.axleTrack) # The class used to drive robots
-        self.m3 = None
-        if thirdMotorOn:
-            self.m3 = Motor(M3Port) # TODO: find use of the third motor
-        self.colorSensor = ColorSensor(ColorSensorPort) # Should be used to track the lines
-        self.frontSensor = UltrasonicSensor(FrontSensorPort)
-        self.leftSensor = UltrasonicSensor(LeftSensorPort)
-        self.rightSensor = UltrasonicSensor(RightSensorPort)
+
         self._statThread = Thread(target=self._statFunc)
-        self._statThread.setDaemon(True)
+        self._statThread.daemon = True
         
         
     def forward(self, distance):
@@ -157,10 +161,10 @@ class ROBOT():
             self.brick.screen.clear()
             _, robotSpeed, _, _ = self.motor.state()
             robotSpeed = "IDLE" if robotSpeed == 0 else str(robotSpeed)
-            text = f"""
+            text = """
                     INGLEBOROUGH ROBOT\n
-                       |{robotSpeed}|
-                    """
+                       |{}|
+                    """.format(robotSpeed)
             # TODO: add more info on the display
             self.brick.screen.print(text)
             

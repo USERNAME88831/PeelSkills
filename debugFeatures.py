@@ -43,7 +43,7 @@ class Logger:
                                 )
 
         self.thread = Thread(target=self._logFunc)
-        self.thread.setDaemon(True) # Since it runs in the background, it will immediatly end when the non-dameon threads end.
+        self.thread.daemon = True # Since it runs in the background, it will immediatly end when the non-dameon threads end.
 
 
 

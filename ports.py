@@ -15,3 +15,4 @@ S4 = Port.S4
 
 # Buttons 
 CENTERBUTTON = Button.CENTER
+RIGHT = Button.RIGHT
