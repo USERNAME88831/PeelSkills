@@ -19,7 +19,7 @@ leftSensorPort = S1
 rightSensorPort = S2
 frontSensorPort = S3
 colorSensorPort = S4
-d = [11, 80]
+
 
 bill = ROBOT(leftWheelPort, rightWheelPort, thirdMotorPort,colorSensorPort, frontSensorPort, leftSensorPort, rightSensorPort,debugMode=True, overrideSafetyFeatures=False, thirdMotorOn=False)
 
@@ -30,18 +30,12 @@ while True:
         break 
 buttonsPressed = None
 while True:
-    _, _, _, reflection = bill.sensorOutput()
-    threshold = sum(d) / len(d)
-    score = (reflection - threshold) / (threshold // 2) # checks if its an outlier
-    if abs(score) < 3:
-        d.append(reflection)
-         
 
-    bill.followLine(100, threshold)
+    a = bill.followLine(100)
     buttonsPressed = bill.brick.buttons.pressed()
-    if RIGHT in buttonsPressed:
+    if RIGHT in buttonsPressed or a==-1:
         break
-print(threshold)
+
 
 # Main program starts here
 

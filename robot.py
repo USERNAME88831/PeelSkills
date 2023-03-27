@@ -13,7 +13,7 @@ from pybricks.media.ev3dev import SoundFile, ImageFile
 from debugFeatures import Logger
 from threading import * 
 
-
+d = [11, 80]
 
 class ROBOT():    
 
@@ -105,25 +105,24 @@ class ROBOT():
 
     
 
-    def followLine(self, speed, threshold) -> int:
+    def followLine(self, speed) -> int:
         
         """ 
         This function should be put in a loop in order to fully work, 
         and when finished make sure to end with self.motor.stop().\n
-        
-        threshold should be calculated like:\n
-        a = light reflected by the black line\n
-        b = light reflected elsewhere\n
-        c = another value of light reflected elsewhere\n
-        d = tuple(a, b, c\n
-        sum(d/ length(d)\n
-        
         speed is milimeters per second\n
         should return 0 if it performed fine, or -1 if something happened
         """
         _, _, fS, reflection = self.sensorOutput()
-        deviation = reflection - threshold
+
+        threshold = sum(d) / len(d)
+        score = (reflection - threshold) / (threshold // 2) # checks if its an outlier
+        if abs(score) < 3:
+            d.append(reflection)
+
         percentage = 1
+
+        deviation = reflection - threshold
         turn = 1.2 * deviation
         if self.safeMode == True:
             if fS <= self.slowDownDistance:
