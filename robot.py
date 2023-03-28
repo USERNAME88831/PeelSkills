@@ -83,7 +83,7 @@ class ROBOT():
         self.motor.straight(-distance)
 
     def resetLift(self):
-        self.m3.run_target(10, 0)
+        self.m3.run_target(100, 0)
 
     def liftUp(self, angle) -> int:
         maxAngle = 90
@@ -91,14 +91,15 @@ class ROBOT():
         minAngle = 0
 
         if self.hasThirdMotor:
+            print(self.m3.angle()+angle)
             if angle/-angle == 1:
-                if (self.m3.angle+angle) < minAngle:
-                    self.m3.run_angle(10, angle)
+                if (self.m3.angle()+angle) > minAngle:
+                    self.m3.run_angle(100, angle)
                 else:
                     return -1
             else:
-                if (self.m3.angle+angle) > maxAngle:
-                    self.m3.run_angle(10, angle)
+                if (self.m3.angle()+angle) < maxAngle:
+                    self.m3.run_angle(100, angle)
                 else:
                     return -1
         else:
@@ -117,9 +118,12 @@ class ROBOT():
         _, _, fS, reflection = self.sensorOutput()
 
         threshold = sum(d) / len(d)
+
+        
         score = (reflection - threshold) / (threshold // 2) # checks if its an outlier
         if abs(score) < 3:
             d.append(reflection)
+        
 
         percentage = 1
 
@@ -132,7 +136,7 @@ class ROBOT():
         if percentage <= 0.1:
             self.motor.stop()
             return -1
-        speed *= percentage
+
         self.motor.drive(speed, turn)
         return 0
 

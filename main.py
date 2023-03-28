@@ -29,12 +29,20 @@ while True:
     if CENTERBUTTON in buttonsPressed:
         break 
 buttonsPressed = None
+
+bill.liftUp(60)
+bill.resetLift()
+
 while True:
 
     a = bill.followLine(100)
     buttonsPressed = bill.brick.buttons.pressed()
+    
     if RIGHT in buttonsPressed or a==-1:
+
         break
+        
+
 
 
 # Main program starts here
