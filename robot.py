@@ -82,12 +82,13 @@ class ROBOT():
     def backward(self, distance):
         self.motor.straight(-distance)
 
+    def resetLift(self):
+        self.m3.run_target(10, 0)
 
     def liftUp(self, angle) -> int:
         maxAngle = 90
 
         minAngle = 0
-
 
         if self.hasThirdMotor:
             if angle/-angle == 1:
