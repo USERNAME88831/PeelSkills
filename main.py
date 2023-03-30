@@ -30,20 +30,80 @@ while True:
         break 
 buttonsPressed = None
 
-bill.liftUp(60)
-bill.resetLift()
-
-while True:
-
-    a = bill.followLine(100)
-    buttonsPressed = bill.brick.buttons.pressed()
-    
-    if RIGHT in buttonsPressed or a==-1:
-
-        break
         
 
 
 
 # Main program starts here
 
+startLocaction = "P5"
+
+bill.position = lookUp(startLocaction)
+
+# CHALLENGE 2 
+
+bill.goTo("C25")
+bill.liftUp(90)
+bill.up_box(1)
+bill.resetLift()
+bill.down_box(2)
+
+
+# CHALLENGE 5
+
+bill.liftUp(90)
+bill.goTo("T24")
+bill.resetLift()
+bill.goTo("V1")
+bill.liftUp(90)
+bill.down_box(2)
+
+bill.goTo("T25")
+bill.resetLift()
+bill.goTo(startLocaction)
+bill.liftUp(90)
+bill.down_box(2)
+
+bill.goTo("R25")
+bill.resetLift()
+bill.goTo("V1")
+bill.liftUp(90)
+bill.down_box(2)
+
+
+bill.goTo("R24")
+bill.resetLift()
+bill.goTo(startLocaction)
+bill.liftUp(90)
+bill.down_box(2)
+
+
+# CHALLENGE 3
+
+bill.goTo("N31")
+bill.resetLift()
+bill.goTo("C41")
+bill.liftUp(90)
+bill.down_box(3)
+
+# CHALLENGE  1
+
+bill.goTo("B13")
+bill.resetLift()
+bill.goTo("E34")
+bill.liftUp(90)
+
+bill.goTo("F11")
+bill.resetLift()
+bill.goTo("F33")
+bill.liftUp(90)
+
+bill.goTo("F15")
+bill.resetLift()
+bill.goTo("G33")
+bill.liftUp(90)
+
+bill.down_box(3)
+
+bill.goTo(startLocaction)
+#  G32, G31 is where the mangos should be placed

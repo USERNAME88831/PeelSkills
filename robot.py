@@ -12,6 +12,7 @@ from pybricks.robotics import DriveBase
 from pybricks.media.ev3dev import SoundFile, ImageFile
 from debugFeatures import Logger
 from threading import * 
+from ports import *
 
 d = [11, 80]
 
@@ -28,7 +29,7 @@ class ROBOT():
 
 
         self.wheelDiameter = 60 # the diameter of the wheels
-        self.axleTrack = 200 # the horizontal distance between the two wheels, practically the width of the robot  
+        self.axleTrack = 125 # the horizontal distance between the two wheels, practically the width of the robot  
         # TODO: get diameter of the two wheels, and horizontal distance between the two wheels
 
         self.safeMode = not overrideSafetyFeatures # safety features should only be turned off while testing and debugging
@@ -65,10 +66,13 @@ class ROBOT():
                              thirdMotorOn
                              )
 
-
+        self.position = [0,0]
         self._statThread = Thread(target=self._statFunc)
         self._statThread.daemon = True
-        
+
+        self.pos = [[0,0],[0,1],[1,1],[1,0]]
+        self.pos_1 = 0
+        self.direction = [0,0] # (0,0) = Forward, (1,1) = back, (1,0)= left, (0,1)=right
         
     def forward(self, distance):
         self.motor.straight(distance)
@@ -85,6 +89,56 @@ class ROBOT():
     def resetLift(self):
         self.m3.run_target(100, 0)
 
+    def right_box(self):
+        self.right(90)
+        pos_1 = self.pos_1 + 1
+        if pos_1 == 4:
+            pos_1 = 0
+        self.direction = self.pos[pos_1]
+        self.pos_1 = pos_1
+        
+    def left_box(self):
+        self.left(90)
+        pos_1 = self.pos_1 - 1
+        if pos_1 == -1:
+            pos_1 = 3
+        self.direction = self.pos[pos_1]
+        self.pos_1 = pos_1
+
+    def up_box(self, distance):
+        line = 50
+
+        if self.direction == [0,0]:
+            a = self.position[1] + distance
+            self.position[1] = a
+        elif self.direction == [0,1]:
+            a = self.position[0] + distance
+            self.position[0] = a 
+        elif self.direction == [1,0]:
+            a = self.position[0] - distance
+            print(self.position)
+            self.position[0] = a
+        else:
+            a = self.position[1] - distance
+            self.position[1] = a
+
+        self.forward(line*distance)
+
+
+    def down_box(self, distance):
+        line = 50
+        if self.direction == [0,0]:
+            self.position[1] -= distance
+        elif self.direction == [0,1]:
+            self.position[0] -= distance
+        elif self.direction == [1,0]:
+            self.position[0] += distance
+        else:
+            self.position[1] += distance
+
+    
+        self.backward(line*distance)
+
     def liftUp(self, angle) -> int:
         maxAngle = 90
 
@@ -93,19 +147,61 @@ class ROBOT():
         if self.hasThirdMotor:
             print(self.m3.angle()+angle)
             if angle/-angle == 1:
-                if (self.m3.angle()+angle) > minAngle:
+                if (self.m3.angle()+angle) >= minAngle:
                     self.m3.run_angle(100, angle)
                 else:
                     return -1
             else:
-                if (self.m3.angle()+angle) < maxAngle:
+                if (self.m3.angle()+angle) <= maxAngle:
                     self.m3.run_angle(100, angle)
                 else:
                     return -1
         else:
             return -1
 
-    
+
+    def goTo(self, coordinate):
+        coord_a = self.position
+        coord_b = lookUp(coordinate)
+        coord_c = (coord_a[0] - coord_b[0], coord_a[1] - coord_b[1])
+        print(coord_b)
+        if abs(coord_c[0])/-coord_c[0] == 1:
+            while True:
+        
+                if self.direction == [0,1]:
+                    break
+                if self.pos_1 == 0:
+                    self.right_box()
+                elif self.pos_1 == 2:
+                    self.right_box()
+                else:
+                    self.left_box()
+            self.up_box(abs(coord_c[0]))
+        else:
+            while True:
+                if self.direction == [1,0]:
+                    break
+                if self.pos_1 == 0:
+                    self.left_box()
+                elif self.pos_1 == 1:
+                    self.right_box()
+                else:
+                    self.right_box()
+            self.up_box(abs(coord_c[0]))
+
+        if abs(coord_c[1])/-coord_c[1] == 1:
+            while True:
+                if self.direction == [0,0]:
+                    break
+                self.left_box()
+            self.up_box(abs(coord_c[1]))
+        else:
+            while True:
+                if self.direction == [1,1]:
+                    break
+                self.right_box()
+            self.up_box(abs(coord_c[1]))
+        
 
     def followLine(self, speed) -> int:
         
